@@ -9,7 +9,8 @@ import static com.codeborne.selenide.Selenide.$x;
 public class MainScreenPage {
     private static final Logger LOG = Logger.getLogger(MainScreenPage.class);
     SelenideElement cancelShiftBtn = $x("//*[@class = 'modal-footer']//button[@ng-click = 'vm.no()']"),
-            infoUserName = $x("//div[@class = 'user-name nav-clip']");
+            infoUserName = $x("//div[@class = 'user-name nav-clip']"),
+            btnCustomers = $x("//div[contains(@ng-click, 'customers')]");
 
     @Step("Click Cancel Shift Btn")
     public MainScreenPage clickCancelShiftBtn(){
@@ -19,6 +20,13 @@ public class MainScreenPage {
             LOG.info("Cancel Shift button click");
         }
         return this;
+    }
+
+    @Step("Click Customers Button")
+    public CustomersPage clickCustomersBtn(){
+        btnCustomers.click();
+        LOG.info("Click Customers Button");
+        return new CustomersPage();
     }
 
     @Step("Is Right user login")

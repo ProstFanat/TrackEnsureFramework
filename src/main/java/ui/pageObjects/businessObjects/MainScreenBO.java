@@ -18,4 +18,10 @@ public class MainScreenBO {
         Assert.assertTrue(mainScreenPage.isRightUserLogin(userName));
         return this;
     }
+
+    @Step("Open Customers page")
+    public CustomersBO openCustomersPage(){
+        mainScreenPage.clickCustomersBtn();
+        return new CustomersBO();
+    }
 }
