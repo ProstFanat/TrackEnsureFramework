@@ -22,6 +22,7 @@ public class MainScreenBO {
     @Step("Open Customers page")
     public CustomersBO openCustomersPage(){
         mainScreenPage.clickCustomersBtn();
+        LOG.info("Customers page opened");
         return new CustomersBO();
     }
 }

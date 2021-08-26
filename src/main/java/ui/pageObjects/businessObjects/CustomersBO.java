@@ -13,11 +13,11 @@ public class CustomersBO {
     }
 
     @Step("Login As {orgName}")
-    public CustomersBO loginAsOrg(String orgName){
+    public FleetSidebarBO loginAsOrg(String orgName){
         customersPage.inputOrgName(orgName)
                 .clickSearchBtn()
                 .clickLogAsOrgBtn();
         LOG.info(String.format("Logged in as %s", orgName));
-        return this;
+        return new FleetSidebarBO();
     }
 }

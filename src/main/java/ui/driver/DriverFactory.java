@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import utils.PropertiesReader;
 
 import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
 
 public class DriverFactory {
     private static final Logger LOG = Logger.getLogger(DriverFactory.class);

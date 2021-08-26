@@ -14,12 +14,15 @@ public class LoginBO {
     }
 
     @Step("Log in to TrackEnsure")
-    public MainScreenBO loginToTrackEnsure(){
+    public MainScreenBO loginToTrackEnsure(String loginName, String password){
         loginPage.openLoginPage()
-                .inputLoginName(PropertiesReader.getProperty("LOGIN_NAME"))
-                .inputPassword(PropertiesReader.getProperty("LOGIN_PASS"))
+                .inputLoginName(loginName)
+                .inputPassword(password)
                 .clickLoginBtn()
                 .clickCancelShiftBtn();
+        LOG.info(String.format("Login user with login '%s' and password '%s'",
+                PropertiesReader.getProperty("LOGIN_NAME"),
+                PropertiesReader.getProperty("LOGIN_PASS")));
         return new MainScreenBO();
     }
 
