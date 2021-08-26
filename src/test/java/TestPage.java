@@ -1,8 +1,5 @@
-import com.codeborne.selenide.Selenide;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import ui.driver.DriverFactory;
 import ui.pageObjects.businessObjects.AdminSidebarBO;
 import ui.pageObjects.businessObjects.LoginBO;
 import ui.pageObjects.businessObjects.MainScreenBO;
@@ -22,7 +19,8 @@ public class TestPage extends BaseTest{
     @Test
     public void testTransactions(){
         new AdminSidebarBO().openEldTransactionPage()
-                .filterTransactionsByDate(5, "September", 2021, 8, "September", 2021);
+                .filterTransactionsByDate(5, "September", 2021, 8, "September", 2021)
+                .filterByOrganization(PropertiesReader.getProperty("ORG_NAME"));
         sleep(5000);
     }
 
@@ -31,7 +29,6 @@ public class TestPage extends BaseTest{
         new MainScreenBO().openCustomersPage()
                 .loginAsOrg(PropertiesReader.getProperty("ORG_NAME"))
                 .openDriversPage()
-                //.createDriverDefaultParameters()
                 .openHosPageForDriver("Test", "Company")
                 .openHosEditorPage()
                 .createAndProcessedTransactionWithReturningDriverName();

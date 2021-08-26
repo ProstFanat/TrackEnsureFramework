@@ -19,4 +19,11 @@ public class EldTransactionsBO {
                 .clickFilterTransactionsBtn();
         return this;
     }
+
+    @Step("Filter by organization - {org}")
+    public EldTransactionsBO filterByOrganization(String org){
+        eldTransactionsPage.selectOrganizationInFilter(org)
+                .clickFilterTransactionsBtn();
+        return this;
+    }
 }
