@@ -2,7 +2,6 @@ package ui.pageObjects.businessObjects;
 
 import io.qameta.allure.Step;
 import org.apache.log4j.Logger;
-import ui.pageObjects.HosEditorPage;
 import ui.pageObjects.HosPage;
 
 public class HosBO {

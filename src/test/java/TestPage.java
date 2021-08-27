@@ -1,3 +1,4 @@
+import base.BaseTest;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import ui.pageObjects.businessObjects.AdminSidebarBO;
@@ -7,7 +8,7 @@ import utils.PropertiesReader;
 
 import static com.codeborne.selenide.Selenide.sleep;
 
-public class TestPage extends BaseTest{
+public class TestPage extends BaseTest {
 
     @BeforeMethod
     public void setUp(){
@@ -19,8 +20,11 @@ public class TestPage extends BaseTest{
     @Test
     public void testTransactions(){
         new AdminSidebarBO().openEldTransactionPage()
-                .filterTransactionsByDate(5, "September", 2021, 8, "September", 2021)
-                .filterByOrganization(PropertiesReader.getProperty("ORG_NAME"));
+                //.filterTransactionsByDate(5, "September", 2021, 8, "September", 2021)
+                .filterByOrganization(PropertiesReader.getProperty("ORG_NAME"))
+                .filterByDriver("FirstName83282 LastName83282")
+                .filterByUser("Automation Script")
+                .verifyTableContainsTransactionsOnlyWithDriver("FirstName83282 LastName83282");
         sleep(5000);
     }
 
@@ -39,7 +43,7 @@ public class TestPage extends BaseTest{
         new MainScreenBO().openCustomersPage()
                 .loginAsOrg(PropertiesReader.getProperty("ORG_NAME"))
                 .openDriversPage()
-                .createDriverDefaultParameters();
+                .createDriver();
     }
 
 

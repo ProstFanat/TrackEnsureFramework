@@ -20,9 +20,26 @@ public class EldTransactionsPage {
             userInput = $x("//ng-select[@placeholder = 'By User']//input"),
             myTransactionsCheckbox = $x("//label[contains(text(), 'My Transactions')]//input"),
             btnSendNotification = $x("//button[contains(text(), 'Send Notification')]"),
-            btnFilterEldTransactions = $x("//button[contains(text(), 'Filter ELD Transactions')]");
+            btnFilterEldTransactions = $x("//button[contains(text(), 'Filter ELD Transactions')]"),
+            btnActions = $x("//datatable-body//button"),
+            actionView = $x("//li[@role = 'menuitem']//*[contains(text(), 'View')]");
     private final ElementsCollection
-            listOfEntityInSelect = $$x("//div[@role = 'option']");
+            listOfEntityInSelect = $$x("//div[@role = 'option']"),
+            driversColumns = $$x("//datatable-body//datatable-row-wrapper//datatable-body-cell[6]");
+
+    @Step("Click btn Actions")
+    public EldTransactionsPage clickActionsBtn(){
+        btnActions.click();
+        LOG.info("Click btn Actions");
+        return this;
+    }
+
+    @Step("Click on action View")
+    public EldTransactionsPage clickViewAction(){
+        actionView.click();
+        LOG.info("Click on action View");
+        return this;
+    }
 
     @Step("Click on transaction status select")
     public EldTransactionsPage clickOnTransactionStatusSelect(){
@@ -100,5 +117,17 @@ public class EldTransactionsPage {
         clickOnEntityFromList(user);
         LOG.info(String.format("Input driver - '%s' in filter", user));
         return this;
+    }
+
+    @Step("is table contains transactions only with driver - {driver}")
+    public Boolean isTableContainsTransactionsOnlyWithDriver(String driver){
+        LOG.info("Checking table on driver");
+        for (SelenideElement driverColumn: driversColumns) {
+            if (!driverColumn.getText().trim().equals(driver)){
+                LOG.info("Error! Find transaction with another driver");
+                return false;
+            }
+        }
+        return true;
     }
 }

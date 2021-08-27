@@ -13,6 +13,7 @@ public class HosPage {
             btnGenerateReport = $x("//*[@ng-click='vm.goToHosReport()']"),
             btnGoToEditor = $x("//*[@ispermittedfor='read.ELD-EDITOR']");
 
+
     @Step("Click hos report tab")
     public HosPage clickHosReportTab(){
         hosReportTab.click();

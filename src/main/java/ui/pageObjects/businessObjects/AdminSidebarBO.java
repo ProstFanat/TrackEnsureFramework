@@ -3,6 +3,7 @@ package ui.pageObjects.businessObjects;
 import io.qameta.allure.Step;
 import org.apache.log4j.Logger;
 import ui.pageObjects.AdminSidebarPage;
+import ui.pageObjects.BasePage;
 import ui.pageObjects.EldTransactionsPage;
 
 public class AdminSidebarBO {
@@ -16,6 +17,7 @@ public class AdminSidebarBO {
     @Step("Open ELD Transactions page")
     public EldTransactionsBO openEldTransactionPage(){
         adminSidebarPage.clickEldTransactionsBtn();
+        BasePage.waitForPageLoaded();
         LOG.info("Open ELD Transactions page");
         return new EldTransactionsBO();
     }

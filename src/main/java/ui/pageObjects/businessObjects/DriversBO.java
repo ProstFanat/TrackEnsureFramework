@@ -4,8 +4,12 @@ import io.qameta.allure.Attachment;
 import io.qameta.allure.Step;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
+import ui.pageObjects.BasePage;
 import ui.pageObjects.DriversPage;
 import ui.pageObjects.HosPage;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.codeborne.selenide.Selenide.switchTo;
 
@@ -47,13 +51,13 @@ public class DriversBO {
     }
 
     @Step("Create driver with default parameters")
-    public DriversBO createDriverDefaultParameters(){
+    public Integer createDriver(){
         int id = (int) (Math.random() * 100000);
 
         driversPage.clickCreateDriverBtn()
                 .selectHOSProvider()
-                .inputFirstName("firstName" + id)
-                .inputLastName("lastName" + id)
+                .inputFirstName("FirstName" + id)
+                .inputLastName("LastName" + id)
                 .inputEmail(String.format("email%s@gmail.com", id))
                 .inputLoginName("loginName" + id)
                 .inputPass("test")
@@ -71,23 +75,31 @@ public class DriversBO {
         LOG.info(String.format("Create driver firstName - 'firstName%s'; lastName - 'lastName%s';" +
                 " email - 'email%s@gmail.com'; login - loginName%s; pass - test; driverLicenseNumber - number%s;" +
                 " yardMove - true; personalUse - true; regainHours - true", id, id, id, id, id));
-        verifyThatDriverCreate("firstName" + id, "lastName" + id);
-        return this;
+        verifyThatDriverCreate("FirstName" + id, "LastName" + id);
+        return id;
     }
 
     @Step("Open HOS page for driver {firstName} and {lastName}")
     public HosBO openHosPageForDriver(String firstName, String lastName){
-        driversPage.inputFirstNameSearch(firstName)
-                .inputLastNameSearch(lastName)
-                .clickOpenHosPageBtn();
+        searchDriverByFirstNameAndLastName(firstName, lastName);
+        driversPage.clickOpenHosPageBtn();
         switchTo().window(1);
         LOG.info(String.format("Open hos page for %s %s", firstName, lastName));
         return new HosBO();
     }
 
+    @Step("Search driver by first and last name")
+    public DriversBO searchDriverByFirstNameAndLastName(String firstName, String lastName){
+        driversPage.inputFirstNameSearch(firstName)
+                .inputLastNameSearch(lastName);
+        BasePage.waitForPageLoaded();
+        LOG.info("Searched driver be first and last name - " + firstName + " " + lastName);
+        return this;
+    }
+
     @Attachment
     public DriversBO verifyThatDriverCreate(String firstName, String lastName){
-        Assert.assertTrue(driversPage.isDriverCreatedMessageDisplayed(firstName, lastName));
+        Assert.assertTrue(driversPage.isDriverCreatedMessageDisplayed(firstName, lastName), "Message is not displayed");
         return this;
     }
 }

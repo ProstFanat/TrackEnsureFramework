@@ -7,11 +7,6 @@ import ui.pageObjects.BasePage;
 import ui.pageObjects.HosEditorPage;
 import utils.PropertiesReader;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.codeborne.selenide.WebDriverRunner.url;
-
 public class HosEditorBO {
     private static final Logger LOG = Logger.getLogger(MainScreenBO.class);
     private final HosEditorPage hosEditorPage;
@@ -42,7 +37,18 @@ public class HosEditorBO {
     }
 
     @Step("Open Transaction")
-    public HosEditorBO openTransaction(){
+    public HosEditorBO openTransaction(String description){
+        deleteTransaction();
+        if (hosEditorPage.isBtnOpenTransactionDisplayed()) {
+            hosEditorPage.clickOpenTransactionBtn()
+                    .inputDescription(description)
+                    .clickSaveBtn();
+            LOG.info("Transaction opened");
+            BasePage.waitForPageLoaded();
+        } else {
+            LOG.info("Transaction was already opened");
+        }
+
         return this;
     }
 

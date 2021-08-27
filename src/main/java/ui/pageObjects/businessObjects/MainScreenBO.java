@@ -15,7 +15,7 @@ public class MainScreenBO {
 
     @Step("Verify that right user login - {userName}")
     public MainScreenBO verifyThatRightUserNameDisplayed(String userName){
-        Assert.assertTrue(mainScreenPage.isRightUserLogin(userName));
+        Assert.assertTrue(mainScreenPage.isRightUserLogin(userName), "Another User login");
         return this;
     }
 
