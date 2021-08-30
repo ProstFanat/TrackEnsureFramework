@@ -5,6 +5,7 @@ import com.codeborne.selenide.SelenideElement;
 import io.qameta.allure.Step;
 import org.apache.log4j.Logger;
 import ui.decorator.DatePicker;
+import ui.decorator.ListOfElements;
 
 import static com.codeborne.selenide.Selenide.$$x;
 import static com.codeborne.selenide.Selenide.$x;
@@ -22,10 +23,13 @@ public class EldTransactionsPage {
             btnSendNotification = $x("//button[contains(text(), 'Send Notification')]"),
             btnFilterEldTransactions = $x("//button[contains(text(), 'Filter ELD Transactions')]"),
             btnActions = $x("//datatable-body//button"),
-            actionView = $x("//li[@role = 'menuitem']//*[contains(text(), 'View')]");
+            actionView = $x("//li[@role = 'menuitem']//*[contains(text(), 'View')]"),
+            actionTake = $x("//li[@role = 'menuitem']//*[contains(text(), 'Take')]");
     private final ElementsCollection
             listOfEntityInSelect = $$x("//div[@role = 'option']"),
-            driversColumns = $$x("//datatable-body//datatable-row-wrapper//datatable-body-cell[6]");
+            driversColumns = $$x("//datatable-body//datatable-row-wrapper//datatable-body-cell[6]"),
+            ownedByColumns = $$x("//datatable-body//datatable-row-wrapper//datatable-body-cell[8]"),
+            rejectComment = $$x("//datatable-body//datatable-row-wrapper//datatable-body-cell[19]");
 
     @Step("Click btn Actions")
     public EldTransactionsPage clickActionsBtn(){
@@ -38,6 +42,13 @@ public class EldTransactionsPage {
     public EldTransactionsPage clickViewAction(){
         actionView.click();
         LOG.info("Click on action View");
+        return this;
+    }
+
+    @Step("Click on action Take")
+    public EldTransactionsPage clickTakeAction(){
+        actionTake.click();
+        LOG.info("Click on action Take");
         return this;
     }
 
@@ -76,19 +87,12 @@ public class EldTransactionsPage {
         return this;
     }
 
-    @Step("Click on entity '{entity}' from list of select")
-    public EldTransactionsPage clickOnEntityFromList(String entity){
-        boolean isFind = false;
-        LOG.info("Looking for desired Entity");
-        for (SelenideElement currentEntity: listOfEntityInSelect) {
-            if (currentEntity.getText().trim().equals(entity)){
-                currentEntity.click();
-                LOG.info("Click on the desired entity - " + entity);
-                isFind = true;
-                break;
-            }
-        }
-        if(!isFind) LOG.info("Desired entity not found");
+    @Step("Select Status - '{status}' in filter")
+    public EldTransactionsPage selectStatusInFilter(String status){
+        transactionStatusSelect.clear();
+        transactionStatusSelect.setValue(status);
+        ListOfElements.clickOnEntityFromList(status, listOfEntityInSelect);
+        LOG.info(String.format("Input status - '%s' in filter", status));
         return this;
     }
 
@@ -96,7 +100,7 @@ public class EldTransactionsPage {
     public EldTransactionsPage selectOrganizationInFilter(String organization){
         organizationInput.clear();
         organizationInput.setValue(organization);
-        clickOnEntityFromList(organization);
+        ListOfElements.clickOnEntityFromList(organization, listOfEntityInSelect);
         LOG.info(String.format("Input organization - '%s' in filter", organization));
         return this;
     }
@@ -105,7 +109,7 @@ public class EldTransactionsPage {
     public EldTransactionsPage selectDriverInFilter(String driver){
         driverInput.clear();
         driverInput.setValue(driver);
-        clickOnEntityFromList(driver);
+        ListOfElements.clickOnEntityFromList(driver, listOfEntityInSelect);
         LOG.info(String.format("Input driver - '%s' in filter", driver));
         return this;
     }
@@ -114,7 +118,7 @@ public class EldTransactionsPage {
     public EldTransactionsPage selectUserInFilter(String user){
         userInput.clear();
         userInput.setValue(user);
-        clickOnEntityFromList(user);
+        ListOfElements.clickOnEntityFromList(user, listOfEntityInSelect);
         LOG.info(String.format("Input driver - '%s' in filter", user));
         return this;
     }
@@ -129,5 +133,19 @@ public class EldTransactionsPage {
             }
         }
         return true;
+    }
+
+    @Step("Is owned by set of right user")
+    public boolean isOwnedBySetRightUser(String userName){
+        boolean result = ownedByColumns.first().getText().contains(userName);
+        LOG.info("Is owned by set of right user - " + result);
+        return result;
+    }
+
+    @Step("Is rejected comment equals expected")
+    public boolean isRejectedCommentEqualsExpected(String comment){
+        boolean result = rejectComment.first().getText().trim().equals(comment);
+        LOG.info("Is rejected comment equals expected - " + result);
+        return result;
     }
 }

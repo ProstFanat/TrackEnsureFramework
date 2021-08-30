@@ -1,9 +1,9 @@
 import base.BaseTest;
+import com.codeborne.selenide.Selenide;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import ui.pageObjects.businessObjects.AdminSidebarBO;
-import ui.pageObjects.businessObjects.LoginBO;
-import ui.pageObjects.businessObjects.MainScreenBO;
+import ui.driver.DriverFactory;
+import ui.pageObjects.businessObjects.*;
 import utils.PropertiesReader;
 
 import static com.codeborne.selenide.Selenide.sleep;
@@ -35,7 +35,7 @@ public class TestPage extends BaseTest {
                 .openDriversPage()
                 .openHosPageForDriver("Test", "Company")
                 .openHosEditorPage()
-                .createAndProcessedTransactionWithReturningDriverName();
+                .createAndProcessedTransactionWithReturningDriverName(PropertiesReader.getProperty("DESCRIPTION"));
     }
 
     @Test
@@ -44,6 +44,35 @@ public class TestPage extends BaseTest {
                 .loginAsOrg(PropertiesReader.getProperty("ORG_NAME"))
                 .openDriversPage()
                 .createDriver();
+    }
+
+    @Test
+    public void commitTransactionTest(){
+        new MainScreenBO().openCustomersPage()
+                .loginAsOrg(PropertiesReader.getProperty("ORG_NAME"))
+                .openDriversPage();
+        Integer driverId = new DriversBO().createDriver();
+        new DriversBO().openHosPageForDriver("FirstName" + driverId, "LastName" + driverId)
+                .openHosEditorPage()
+                .openTransaction(PropertiesReader.getProperty("DESCRIPTION"))
+                .processTransaction(PropertiesReader.getProperty("DESCRIPTION"));
+        String driver = String.format("FirstName%s LastName%s", driverId, driverId);
+        Selenide.close();
+        DriverFactory.initDriver();
+        new LoginBO().loginToTrackEnsure(PropertiesReader.getProperty("LOGIN_NAME"),
+                PropertiesReader.getProperty("LOGIN_PASS"))
+                .verifyThatRightUserNameDisplayed(PropertiesReader.getProperty("USER_NAME"));
+        new AdminSidebarBO().openEldTransactionPage()
+                .filterByOrganization(PropertiesReader.getProperty("ORG_NAME"))
+                .filterByDriver(driver)
+                .verifyTableContainsTransactionsOnlyWithDriver(driver)
+                .openViewPageForTransaction()
+                .closeInstructionWindow()
+                .closeSupportingInformationWindow()
+                .takeTransaction();
+        Selenide.refresh();
+        new ViewTransactionBO()
+                .verifyThatRightUserSetToOwnedBy(PropertiesReader.getProperty("USER_NAME"));
     }
 
 

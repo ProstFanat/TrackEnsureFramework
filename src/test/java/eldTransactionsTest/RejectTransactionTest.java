@@ -9,9 +9,7 @@ import ui.driver.DriverFactory;
 import ui.pageObjects.businessObjects.*;
 import utils.PropertiesReader;
 
-import static com.codeborne.selenide.Selenide.sleep;
-
-public class CommitTransactionTest extends BaseTest {
+public class RejectTransactionTest extends BaseTest {
 
     @BeforeMethod
     public void setUp(){
@@ -21,7 +19,7 @@ public class CommitTransactionTest extends BaseTest {
     }
 
     @Test
-    public void commitTransactionTest(){
+    public void takeTransactionFromViewPageTest(){
         new MainScreenBO().openCustomersPage()
                 .loginAsOrg(PropertiesReader.getProperty("ORG_NAME"))
                 .openDriversPage();
@@ -45,11 +43,14 @@ public class CommitTransactionTest extends BaseTest {
         new ViewTransactionBO().verifyThatRightUserSetToOwnedBy(PropertiesReader.getProperty("USER_NAME"))
                 .closeInstructionWindow()
                 .closeSupportingInformationWindow()
-                .commitTransaction()
-                .filterByStatus(String.valueOf(TransactionStatus.valueOf("Committed")))
+                .rejectTransaction(PropertiesReader.getProperty("REJECT_ISSUE_TYPE"),
+                        PropertiesReader.getProperty("REJECT_SOLUTION"),
+                        PropertiesReader.getProperty("REJECT_ADD_INFO"),
+                        PropertiesReader.getProperty("REJECT_SCREENSHOT_URL"))
+                .filterByStatus(String.valueOf(TransactionStatus.valueOf("Rejected")))
                 .filterByOrganization(PropertiesReader.getProperty("ORG_NAME"))
                 .filterByDriver(driver)
-                .verifyTableContainsTransactionsOnlyWithDriver(driver);
-
+                .verifyTableContainsTransactionsOnlyWithDriver(driver)
+                .verifyThatRejectCommentEqualsToExpected(PropertiesReader.getProperty("REJECT_COMMENT"));
     }
 }

@@ -2,7 +2,6 @@ package ui.pageObjects.businessObjects;
 
 import io.qameta.allure.Step;
 import org.apache.log4j.Logger;
-import org.jsoup.Connection;
 import org.testng.Assert;
 import ui.pageObjects.BasePage;
 import ui.pageObjects.EldTransactionsPage;
@@ -21,6 +20,14 @@ public class EldTransactionsBO {
                 .selectDateInFilter(dayFrom, monthFrom, yearFrom, dayTo, monthTo, yearTo)
                 .clickFilterTransactionsBtn();
         LOG.info(String.format("Table filtered by date from '%s-%s-%s' to '%s-%s-%s'", dayFrom, monthFrom, yearFrom, dayTo, monthTo, yearTo));
+        return this;
+    }
+
+    @Step("Filter by user - {user}")
+    public EldTransactionsBO filterByStatus(String status){
+        eldTransactionsPage.selectStatusInFilter(status)
+                .clickFilterTransactionsBtn();
+        LOG.info("Table filtered by status - " + status);
         return this;
     }
 
@@ -64,6 +71,27 @@ public class EldTransactionsBO {
         BasePage.waitForPageLoaded();
         LOG.info("View Transaction Page opened");
         return new ViewTransactionBO();
+    }
+
+    @Step("Take transaction")
+    public EldTransactionsBO takeTransaction(){
+        eldTransactionsPage.clickActionsBtn()
+                .clickTakeAction();
+        BasePage.waitForPageLoaded();
+        LOG.info("Transaction was taken");
+        return this;
+    }
+
+    @Step("Verify that owned by set right user")
+    public EldTransactionsBO verifyThatRightUserSetToOwnedBy(String user){
+        Assert.assertTrue(eldTransactionsPage.isOwnedBySetRightUser(user), "To Owned by set wrong user");
+        return this;
+    }
+
+    @Step("Verify that reject comment equals to expected")
+    public EldTransactionsBO verifyThatRejectCommentEqualsToExpected(String comment){
+        Assert.assertTrue(eldTransactionsPage.isRejectedCommentEqualsExpected(comment), "Reject comment is not equals to expected");
+        return this;
     }
 }
 

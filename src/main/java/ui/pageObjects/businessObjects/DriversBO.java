@@ -88,6 +88,14 @@ public class DriversBO {
         return new HosBO();
     }
 
+    @Step("Open HOS page")
+    public HosBO openHosPage(){
+        driversPage.clickOpenHosPageBtn();
+        switchTo().window(1);
+        LOG.info("Open hos page");
+        return new HosBO();
+    }
+
     @Step("Search driver by first and last name")
     public DriversBO searchDriverByFirstNameAndLastName(String firstName, String lastName){
         driversPage.inputFirstNameSearch(firstName)

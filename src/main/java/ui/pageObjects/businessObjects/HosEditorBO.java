@@ -84,10 +84,15 @@ public class HosEditorBO {
             }
             counter++;
             if(createdTransactions > 0) break;
+
+            if(hosEditorPage.clickOnDriverSelect().driversList.size() - 1 == counter){
+                return createTransactionForNewDriver();
+            }
         }
         return result;
     }
 
+    @Step("creating {quantity} transactions")
     public HosEditorBO createTransactions(Integer quantity, String description){
         int createdTransactions = 0, counter = 1;
         while(createdTransactions < quantity){
@@ -114,8 +119,6 @@ public class HosEditorBO {
                     processTransaction(description);
                     createdTransactions++;
                     LOG.info(String.format("Number of created transactions - %s", createdTransactions));
-                } else if(hosEditorPage.isBtnDeleteDisplayed()){
-
                 }
             } catch (Exception e){
                 LOG.info(e);
@@ -125,81 +128,14 @@ public class HosEditorBO {
         return this;
     }
 
-    @Attachment
-    public String createAndProcessedTransactionWithReturningDriverName(){
-        int createdTransactions = 0, counter = 1;
-        String result = null;
-        String description = PropertiesReader.getProperty("DESCRIPTION");
-        while(createdTransactions < 1){
-            hosEditorPage.clickOnDriverSelect()
-                    .driversList.get(counter).click();
-            BasePage.waitForPageLoaded();
-            try {
-                deleteTransaction();
-                if (hosEditorPage.isBtnOpenTransactionDisplayed()) {
-                    hosEditorPage.clickOpenTransactionBtn()
-                            .inputDescription(description)
-                            .clickSaveBtn();
-                    BasePage.waitForPageLoaded();
-                    processTransaction(description);
-
-                    createdTransactions++;
-
-                    result = hosEditorPage.getDriverInfo();
-                } else if (hosEditorPage.isBtnProcessedVisible()) {
-                    processTransaction(description);
-                    BasePage.waitForPageLoaded();
-                    createdTransactions++;
-
-                    result = hosEditorPage.getDriverInfo();
-                }
-            } catch (Exception e) {
-                LOG.info(e);
-            }
-            counter++;
-            if(createdTransactions > 0) break;
-        }
-        return result;
+    @Step("Create transaction for new driver")
+    public String createTransactionForNewDriver(){
+        new FleetSidebarBO().openDriversPage();
+        Integer driverId = new DriversBO().createDriver();
+        new DriversBO().openHosPageForDriver("FirstName" + driverId, "LastName" + driverId)
+                .openHosEditorPage()
+                .openTransaction(PropertiesReader.getProperty("DESCRIPTION"))
+                .processTransaction(PropertiesReader.getProperty("DESCRIPTION"));
+        return String.format("FirstName%s LastName%s", driverId, driverId);
     }
-
-    public HosEditorBO createTransactions(Integer quantity){
-        int createdTransactions = 0, counter = 1;
-        String description = PropertiesReader.getProperty("DESCRIPTION");
-        while(createdTransactions < quantity){
-            System.out.println("counter = " + counter + "  createdTransactions = " + createdTransactions);
-            hosEditorPage.clickOnDriverSelect()
-                    .driversList.get(counter).click();
-            try {
-                deleteTransaction();
-                if (hosEditorPage.isBtnOpenTransactionDisplayed()) {
-                    hosEditorPage.clickOpenTransactionBtn()
-                            .inputDescription(description)
-                            .clickSaveBtn();
-                    BasePage.waitForPageLoaded();
-                    processTransaction(description);
-                    createdTransactions++;
-                    LOG.info(String.format("Number of created transactions - %s", createdTransactions));
-                } else if (hosEditorPage.isBtnProcessedVisible()) {
-                    BasePage.waitForPageLoaded();
-                    processTransaction(description);
-                    createdTransactions++;
-                    LOG.info(String.format("Number of created transactions - %s", createdTransactions));
-                } else if (hosEditorPage.isBtnTakeTransactionDisplayed()) {
-                    BasePage.waitForPageLoaded();
-                    processTransaction(description);
-                    createdTransactions++;
-                    LOG.info(String.format("Number of created transactions - %s", createdTransactions));
-                } else if(hosEditorPage.isBtnDeleteDisplayed()){
-
-                }
-            } catch (Exception e){
-                LOG.info(e);
-            }
-            counter++;
-        }
-        return this;
-    }
-
-
-
 }
