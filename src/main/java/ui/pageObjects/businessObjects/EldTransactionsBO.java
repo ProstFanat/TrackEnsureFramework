@@ -1,10 +1,13 @@
 package ui.pageObjects.businessObjects;
 
+import com.codeborne.selenide.Selenide;
 import io.qameta.allure.Step;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 import ui.pageObjects.BasePage;
 import ui.pageObjects.EldTransactionsPage;
+
+import static com.codeborne.selenide.WebDriverRunner.url;
 
 public class EldTransactionsBO {
     private static final Logger LOG = Logger.getLogger(MainScreenBO.class);
@@ -33,6 +36,7 @@ public class EldTransactionsBO {
 
     @Step("Filter by organization - {org}")
     public EldTransactionsBO filterByOrganization(String org){
+        BasePage.waitForPageLoaded();
         eldTransactionsPage.selectOrganizationInFilter(org)
                 .clickFilterTransactionsBtn();
         LOG.info("Table filtered by organization - " + org);
@@ -82,15 +86,28 @@ public class EldTransactionsBO {
         return this;
     }
 
+    @Step("Open reject comment")
+    public EldTransactionsBO openRejectComment(){
+        eldTransactionsPage.clickOnRejectComment();
+        LOG.info("Reject comment opened");
+        return this;
+    }
+
     @Step("Verify that owned by set right user")
     public EldTransactionsBO verifyThatRightUserSetToOwnedBy(String user){
         Assert.assertTrue(eldTransactionsPage.isOwnedBySetRightUser(user), "To Owned by set wrong user");
         return this;
     }
 
-    @Step("Verify that reject comment equals to expected")
-    public EldTransactionsBO verifyThatRejectCommentEqualsToExpected(String comment){
-        Assert.assertTrue(eldTransactionsPage.isRejectedCommentEqualsExpected(comment), "Reject comment is not equals to expected");
+    @Step("Verify that reject comment contains the {comment}")
+    public EldTransactionsBO verifyThatRejectCommentContainsExpected(String comment){
+        Assert.assertTrue(eldTransactionsPage.isRejectedCommentContainsExpected(comment), "Reject comment is not contains expected");
+        return this;
+    }
+
+    @Step("Verify that reject comment NOT contains {comment}")
+    public EldTransactionsBO verifyThatRejectCommentNotContainsExpected(String comment){
+        Assert.assertFalse(eldTransactionsPage.isRejectedCommentContainsExpected(comment), "Reject comment is contains expected");
         return this;
     }
 }

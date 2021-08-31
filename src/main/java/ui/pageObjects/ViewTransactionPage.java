@@ -6,6 +6,7 @@ import io.qameta.allure.Attachment;
 import io.qameta.allure.Step;
 import org.apache.log4j.Logger;
 import ui.decorator.ListOfElements;
+import utils.PropertiesReader;
 
 import static com.codeborne.selenide.Selenide.$$x;
 import static com.codeborne.selenide.Selenide.$x;
@@ -30,7 +31,7 @@ public class ViewTransactionPage {
         btnRejectInModalWindow = $x("//div[@class = 'modal-footer']//button[text() = 'Reject']"),
         btnCancel = $x("//div[@class = 'modal-footer']//button[text() = 'Cancel']"),
         btnPreview = $x("//div[@class = 'modal-footer']//button[text() = 'Preview']"),
-        additionalInfoInput = $x("//input[@class = 'form-control form-control-sm ng-pristine ng-valid ng-touched']"),
+        additionalInfoInput = $x("//input[contains(@class, 'form-control form-control-sm')]"),
         previewRejectMessage = $x("//div[@class = 'modal-body']//div[@class = 'col' and @ng-reflect-ng-switch = 'true']");
     private final ElementsCollection
             listOfEntityInSelect = $$x("//div[@role = 'option']"),
@@ -163,6 +164,7 @@ public class ViewTransactionPage {
 
     @Step("Input additional info to reject issue")
     public ViewTransactionPage inputAdditionalInfoToRejectSolution(String info){
+        BasePage.waitForPageLoaded();
         additionalInfoInput.clear();
         additionalInfoInput.setValue(info);
         LOG.info("Input additional info to reject issue - " + info);
@@ -180,6 +182,8 @@ public class ViewTransactionPage {
     public boolean isOwnedBySetRightUser(String userName){
         boolean result = $x(String.format("//div[@class = 'content']//*[contains(text(), '%s')]", userName))
                 .getText().contains(userName);
+        System.out.println(result);
+        System.out.println(PropertiesReader.getProperty("REJECT_COMMENT"));
         LOG.info("Is owned by set of right user - " + result);
         return result;
     }
@@ -195,6 +199,13 @@ public class ViewTransactionPage {
     public boolean isCommitBtnDisplayed(){
         boolean result = btnCommitTransaction.isDisplayed();
         LOG.info("Is Commit button displayed? - " + result);
+        return result;
+    }
+
+    @Step("Is reject button in modal window displayed")
+    public boolean isRejectButtonInModalWindowDisplayed(){
+        boolean result = btnRejectInModalWindow.isDisplayed();
+        LOG.info("Is reject button in modal window displayed? - " + result);
         return result;
     }
 

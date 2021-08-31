@@ -9,9 +9,21 @@ import ui.pageObjects.businessObjects.*;
 import utils.PropertiesReader;
 
 public class TakeTransactionTest extends BaseTest {
+    String driver = "";
 
     @BeforeMethod
     public void setUp(){
+        new LoginBO().loginToTrackEnsure(PropertiesReader.getProperty("LOGIN_NAME"),
+                PropertiesReader.getProperty("LOGIN_PASS"))
+                .verifyThatRightUserNameDisplayed(PropertiesReader.getProperty("USER_NAME"));
+        new MainScreenBO().openCustomersPage()
+                .loginAsOrg(PropertiesReader.getProperty("ORG_NAME"))
+                .openDriversPage();
+        new DriversBO().openHosPage()
+                .openHosEditorPage();
+        driver = new HosEditorBO().createAndProcessedTransactionWithReturningDriverName(PropertiesReader.getProperty("DESCRIPTION"));
+        Selenide.close();
+        DriverFactory.initDriver();
         new LoginBO().loginToTrackEnsure(PropertiesReader.getProperty("LOGIN_NAME"),
                 PropertiesReader.getProperty("LOGIN_PASS"))
                 .verifyThatRightUserNameDisplayed(PropertiesReader.getProperty("USER_NAME"));
@@ -19,17 +31,6 @@ public class TakeTransactionTest extends BaseTest {
 
     @Test
     public void takeTransactionFromViewPageTest(){
-        new MainScreenBO().openCustomersPage()
-                .loginAsOrg(PropertiesReader.getProperty("ORG_NAME"))
-                .openDriversPage();
-        new DriversBO().openHosPage()
-                .openHosEditorPage();
-        String driver = new HosEditorBO().createAndProcessedTransactionWithReturningDriverName(PropertiesReader.getProperty("DESCRIPTION"));
-        Selenide.close();
-        DriverFactory.initDriver();
-        new LoginBO().loginToTrackEnsure(PropertiesReader.getProperty("LOGIN_NAME"),
-                PropertiesReader.getProperty("LOGIN_PASS"))
-                .verifyThatRightUserNameDisplayed(PropertiesReader.getProperty("USER_NAME"));
         new AdminSidebarBO().openEldTransactionPage()
                 .filterByOrganization(PropertiesReader.getProperty("ORG_NAME"))
                 .filterByDriver(driver)
@@ -45,17 +46,6 @@ public class TakeTransactionTest extends BaseTest {
 
     @Test
     public void takeTransactionFromEldTransactionsPageTest(){
-        new MainScreenBO().openCustomersPage()
-                .loginAsOrg(PropertiesReader.getProperty("ORG_NAME"))
-                .openDriversPage();
-        new DriversBO().openHosPage()
-                .openHosEditorPage();
-        String driver = new HosEditorBO().createAndProcessedTransactionWithReturningDriverName(PropertiesReader.getProperty("DESCRIPTION"));
-        Selenide.close();
-        DriverFactory.initDriver();
-        new LoginBO().loginToTrackEnsure(PropertiesReader.getProperty("LOGIN_NAME"),
-                PropertiesReader.getProperty("LOGIN_PASS"))
-                .verifyThatRightUserNameDisplayed(PropertiesReader.getProperty("USER_NAME"));
         new AdminSidebarBO().openEldTransactionPage()
                 .filterByOrganization(PropertiesReader.getProperty("ORG_NAME"))
                 .filterByDriver(driver)

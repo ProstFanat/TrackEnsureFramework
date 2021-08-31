@@ -78,6 +78,12 @@ public class HosEditorBO {
                     createdTransactions++;
 
                     result = hosEditorPage.getDriverInfo();
+                } else if (hosEditorPage.isBtnTakeTransactionDisplayed()) {
+                    BasePage.waitForPageLoaded();
+                    processTransaction(description);
+                    createdTransactions++;
+                    result = hosEditorPage.getDriverInfo();
+                    LOG.info(String.format("Number of created transactions - %s", createdTransactions));
                 }
             } catch (Exception e) {
                 LOG.info(e);

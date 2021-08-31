@@ -142,10 +142,20 @@ public class EldTransactionsPage {
         return result;
     }
 
+    @Step("Click on reject comment")
+    public EldTransactionsPage clickOnRejectComment(){
+        rejectComment.first().click();
+        LOG.info("click on reject comment");
+        return this;
+    }
+
     @Step("Is rejected comment equals expected")
-    public boolean isRejectedCommentEqualsExpected(String comment){
-        boolean result = rejectComment.first().getText().trim().equals(comment);
-        LOG.info("Is rejected comment equals expected - " + result);
+    public boolean isRejectedCommentContainsExpected(String comment){
+        boolean result = rejectComment.first().getText().trim().contains(comment);
+        LOG.info(rejectComment.first().getText());
+        LOG.info("Is rejected comment contains expected - " + result);
         return result;
     }
+
+
 }

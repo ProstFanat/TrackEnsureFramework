@@ -2,11 +2,12 @@ package ui.pageObjects.businessObjects;
 
 import io.qameta.allure.Step;
 import org.apache.log4j.Logger;
-import org.jsoup.Connection;
 import org.testng.Assert;
 import ui.pageObjects.BasePage;
 import ui.pageObjects.ViewTransactionPage;
 import utils.PropertiesReader;
+
+import static com.codeborne.selenide.WebDriverRunner.url;
 
 public class ViewTransactionBO {
 
@@ -57,23 +58,77 @@ public class ViewTransactionBO {
                 .inputSolution(solution)
                 .inputAdditionalInfoToRejectSolution(addInfo)
                 .inputScreenshotUrl(url);
-        verifyThatCorrectPreviewMessageDisplayed(PropertiesReader.getProperty("REJECT_COMMENT"));
+        verifyThatPreviewMessageContainsMessage(PropertiesReader.getProperty("REJECT_COMMENT"));
         viewTransactionPage.clickBtnRejectInModalWindow();
         BasePage.waitForPageLoaded();
         LOG.info("Transaction rejected");
         return new EldTransactionsBO();
     }
 
-//    @Step("Get preview reject message")
-//    public ViewTransactionBO getRejectMessage(){
-//        viewTransactionPage.clickBtnPreviewInModalWindow()
-//                .getPreviewRejectComment();
-//    }
+    @Step("Open reject modal window")
+    public ViewTransactionBO openRejectModalWindow(){
+        BasePage.waitForPageLoaded();
+        viewTransactionPage.clickRejectBtn();
+        LOG.info("Open transaction modal window");
+        return this;
+    }
+
+    @Step("Reject transaction")
+    public EldTransactionsBO rejectTransaction(){
+        viewTransactionPage.clickBtnRejectInModalWindow();
+        BasePage.waitForPageLoaded();
+        LOG.info("Transaction rejected");
+        return new EldTransactionsBO();
+    }
+
+    @Step("select issue type")
+    public ViewTransactionBO selectIssueType(String issue){
+        viewTransactionPage.inputIssueType(issue);
+        LOG.info("Select issue type - " + issue);
+        return this;
+    }
+
+    @Step("Input solution")
+    public ViewTransactionBO inputSolution(String solution){
+        viewTransactionPage.inputSolution(solution);
+        LOG.info("Input solution - " + solution);
+        return this;
+    }
+
+    @Step("Input screenshot url")
+    public ViewTransactionBO inputScreenshotUrl(String url){
+        viewTransactionPage.inputScreenshotUrl(url);
+        LOG.info("Input screenshot url - " + url);
+        return this;
+    }
+
+    @Step("Input comment")
+    public ViewTransactionBO inputComment(String comment){
+        viewTransactionPage.inputComment(comment);
+        LOG.info("Input comment - " + comment);
+        return this;
+    }
+
+    @Step("Cancel reject")
+    public ViewTransactionBO cancelReject(){
+        viewTransactionPage.clickBtnCancelInModalWindow();
+        LOG.info("Cancel reject");
+        return this;
+    }
+
+    @Step("Get transaction id")
+    public Integer getTransactionId(){
+        int indexOfTransactionId = url().indexOf("transactionId");
+        String tempString = url().substring(indexOfTransactionId);
+        int result = Integer.parseInt(tempString.substring(14, 20));
+        LOG.info("Get transaction id - " + result);
+        return result;
+    }
 
     @Step("Verify that correct preview message displayed")
-    public ViewTransactionBO verifyThatCorrectPreviewMessageDisplayed(String message){
+    public ViewTransactionBO verifyThatPreviewMessageContainsMessage(String message){
         viewTransactionPage.clickBtnPreviewInModalWindow();
-        Assert.assertTrue(viewTransactionPage.getPreviewRejectComment().equals(message), "reject message is not equals to expected");
+        Assert.assertTrue(viewTransactionPage.getPreviewRejectComment().contains(message), "reject message is not equals to expected");
         return this;
     }
 
@@ -83,5 +138,9 @@ public class ViewTransactionBO {
         return this;
     }
 
-
+    @Step("Verify that Reject btn in modal window displayed")
+    public ViewTransactionBO verifyThatRejectBtnInModalWindowDisplayed(){
+        Assert.assertTrue(viewTransactionPage.isRejectButtonInModalWindowDisplayed());
+        return this;
+    }
 }
