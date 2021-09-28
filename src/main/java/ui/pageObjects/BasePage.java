@@ -22,7 +22,7 @@ public class BasePage {
             WebDriverWait wait = new WebDriverWait(driver, 30);
             wait.until(expectation);
         } catch (Throwable error) {
-            System.out.println("Timeout waiting for Page Load Request to complete.");
+            //System.out.println("Timeout waiting for Page Load Request to complete.");
         }
     }
 }

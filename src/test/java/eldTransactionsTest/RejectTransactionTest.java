@@ -1,5 +1,6 @@
 package eldTransactionsTest;
 
+import DB.entity.DAO.EldTransactionRejectCommentDAO;
 import base.BaseTest;
 import com.codeborne.selenide.Selenide;
 import constants.TransactionStatus;
@@ -10,6 +11,11 @@ import ui.driver.DriverFactory;
 import ui.pageObjects.EldTransactionsPage;
 import ui.pageObjects.businessObjects.*;
 import utils.PropertiesReader;
+
+import javax.swing.text.View;
+
+import static DB.DBConstant.*;
+import static com.codeborne.selenide.Selenide.sleep;
 
 public class RejectTransactionTest extends BaseTest {
     private String driver = "";
@@ -126,6 +132,21 @@ public class RejectTransactionTest extends BaseTest {
     }
 
     @Test
+    public void rejectTransactionWithActiveCheckboxRepeatedMistake(){
+        int transactionId = new ViewTransactionBO().getTransactionId();
+        new ViewTransactionBO().openRejectModalWindow()
+                .selectIssueType(PropertiesReader.getProperty("REJECT_ISSUE_OTHER"))
+                .setRepeatedMistakeCheckbox(true)
+                .inputComment(PropertiesReader.getProperty("REJECT_COMMENT"))
+                .rejectTransaction()
+                .filterByStatus(String.valueOf(TransactionStatus.valueOf("Rejected")))
+                .filterByOrganization(PropertiesReader.getProperty("ORG_NAME"))
+                .filterByDriver(driver)
+                .verifyTableContainsTransactionsOnlyWithDriver(driver)
+                .verifyThatRepeatedMistakeCheckboxIsYInDb(transactionId);
+    }
+
+    @Test
     public void rejectTransactionWithTypeOtherInValidTest(){
         new ViewTransactionBO().openRejectModalWindow()
                 .selectIssueType(PropertiesReader.getProperty("REJECT_ISSUE_OTHER"))
@@ -143,9 +164,9 @@ public class RejectTransactionTest extends BaseTest {
                 .verifyTableContainsTransactionsOnlyWithDriver(driver);
     }
 
-    @Test
-    public void rejectWithRepeatedMistakeProcess(){
-        int transactionId = new ViewTransactionBO().getTransactionId();
-    }
+//    @Test
+//    public void rejectWithRepeatedMistakeProcess(){
+//        int transactionId = new ViewTransactionBO().getTransactionId();
+//    }
 
 }

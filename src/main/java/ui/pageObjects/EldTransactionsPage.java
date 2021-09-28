@@ -21,7 +21,7 @@ public class EldTransactionsPage {
             userInput = $x("//ng-select[@placeholder = 'By User']//input"),
             myTransactionsCheckbox = $x("//label[contains(text(), 'My Transactions')]//input"),
             btnSendNotification = $x("//button[contains(text(), 'Send Notification')]"),
-            btnFilterEldTransactions = $x("//button[contains(text(), 'Filter ELD Transactions')]"),
+            btnFilterEldTransactions = $x("//button[contains(text(), 'Filter')]"),
             btnActions = $x("//datatable-body//button"),
             actionView = $x("//li[@role = 'menuitem']//*[contains(text(), 'View')]"),
             actionTake = $x("//li[@role = 'menuitem']//*[contains(text(), 'Take')]");
@@ -109,6 +109,7 @@ public class EldTransactionsPage {
     public EldTransactionsPage selectDriverInFilter(String driver){
         driverInput.clear();
         driverInput.setValue(driver);
+        BasePage.waitForPageLoaded();
         ListOfElements.clickOnEntityFromList(driver, listOfEntityInSelect);
         LOG.info(String.format("Input driver - '%s' in filter", driver));
         return this;

@@ -35,7 +35,7 @@ public class TestPage extends BaseTest {
                 .openDriversPage()
                 .openHosPageForDriver("Test", "Company")
                 .openHosEditorPage()
-                .createAndProcessedTransactionWithReturningDriverName(PropertiesReader.getProperty("DESCRIPTION"));
+                .createTransactions(8, PropertiesReader.getProperty("DESCRIPTION"));
     }
 
     @Test
@@ -45,36 +45,4 @@ public class TestPage extends BaseTest {
                 .openDriversPage()
                 .createDriver();
     }
-
-    @Test
-    public void commitTransactionTest(){
-        new MainScreenBO().openCustomersPage()
-                .loginAsOrg(PropertiesReader.getProperty("ORG_NAME"))
-                .openDriversPage();
-        Integer driverId = new DriversBO().createDriver();
-        new DriversBO().openHosPageForDriver("FirstName" + driverId, "LastName" + driverId)
-                .openHosEditorPage()
-                .openTransaction(PropertiesReader.getProperty("DESCRIPTION"))
-                .processTransaction(PropertiesReader.getProperty("DESCRIPTION"));
-        String driver = String.format("FirstName%s LastName%s", driverId, driverId);
-        Selenide.close();
-        DriverFactory.initDriver();
-        new LoginBO().loginToTrackEnsure(PropertiesReader.getProperty("LOGIN_NAME"),
-                PropertiesReader.getProperty("LOGIN_PASS"))
-                .verifyThatRightUserNameDisplayed(PropertiesReader.getProperty("USER_NAME"));
-        new AdminSidebarBO().openEldTransactionPage()
-                .filterByOrganization(PropertiesReader.getProperty("ORG_NAME"))
-                .filterByDriver(driver)
-                .verifyTableContainsTransactionsOnlyWithDriver(driver)
-                .openViewPageForTransaction()
-                .closeInstructionWindow()
-                .closeSupportingInformationWindow()
-                .takeTransaction();
-        Selenide.refresh();
-        new ViewTransactionBO()
-                .verifyThatRightUserSetToOwnedBy(PropertiesReader.getProperty("USER_NAME"));
-    }
-
-
-
 }

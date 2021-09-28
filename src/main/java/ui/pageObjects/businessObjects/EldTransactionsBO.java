@@ -1,5 +1,7 @@
 package ui.pageObjects.businessObjects;
 
+import DB.entity.DAO.EldTransactionRejectCommentDAO;
+import DB.entity.EldTransactionRejectComment;
 import com.codeborne.selenide.Selenide;
 import io.qameta.allure.Step;
 import org.apache.log4j.Logger;
@@ -7,6 +9,7 @@ import org.testng.Assert;
 import ui.pageObjects.BasePage;
 import ui.pageObjects.EldTransactionsPage;
 
+import static DB.DBConstant.*;
 import static com.codeborne.selenide.WebDriverRunner.url;
 
 public class EldTransactionsBO {
@@ -108,6 +111,13 @@ public class EldTransactionsBO {
     @Step("Verify that reject comment NOT contains {comment}")
     public EldTransactionsBO verifyThatRejectCommentNotContainsExpected(String comment){
         Assert.assertFalse(eldTransactionsPage.isRejectedCommentContainsExpected(comment), "Reject comment is contains expected");
+        return this;
+    }
+
+    @Step("Verify that repeated mistake checkbox is 'Y' in DB eld_transaction_reject_comment")
+    public EldTransactionsBO verifyThatRepeatedMistakeCheckboxIsYInDb(int transactionId){
+        Assert.assertTrue(new EldTransactionRejectCommentDAO(DB_URL, USER_DB, PASS_DB)
+                .isRepeatedIssueByTransactionId(transactionId), "transaction in eld_transaction_reject_comment has incorrect value of is_repeated_mistake");
         return this;
     }
 }

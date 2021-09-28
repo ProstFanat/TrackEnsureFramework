@@ -2,6 +2,7 @@ package ui.pageObjects.businessObjects;
 
 import io.qameta.allure.Step;
 import org.apache.log4j.Logger;
+import org.jsoup.Connection;
 import org.testng.Assert;
 import ui.pageObjects.BasePage;
 import ui.pageObjects.ViewTransactionPage;
@@ -20,6 +21,7 @@ public class ViewTransactionBO {
 
     @Step("Take transaction")
     public ViewTransactionBO takeTransaction(){
+        BasePage.waitForPageLoaded();
         viewTransactionPage.clickTakeTransactionBtn();
         LOG.info("Transaction was taken");
         return this;
@@ -120,9 +122,16 @@ public class ViewTransactionBO {
     public Integer getTransactionId(){
         int indexOfTransactionId = url().indexOf("transactionId");
         String tempString = url().substring(indexOfTransactionId);
-        int result = Integer.parseInt(tempString.substring(14, 20));
+        int result = Integer.parseInt(tempString.substring(14, 21));
         LOG.info("Get transaction id - " + result);
         return result;
+    }
+
+    @Step("Set checkbox repeated mistake {value}")
+    public ViewTransactionBO setRepeatedMistakeCheckbox(boolean value){
+        viewTransactionPage.setCheckboxRepeatedMistakeProcess(value);
+        LOG.info("Checkbox set " + value);
+        return this;
     }
 
     @Step("Verify that correct preview message displayed")

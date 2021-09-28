@@ -17,7 +17,7 @@ public class ViewTransactionPage {
     private final SelenideElement
         btnOK = $x("//button[text() = 'ОК']"),
         btnClose = $x("//button[text() = 'Close']"),
-        btnTakeTransaction = $x("//button[contains(text(), 'Take Transaction')]"),
+        btnTakeTransaction = $x("//*[contains(text(), 'Take')]"),
         btnRejectTransaction = $x("//button[contains(text(), 'Reject')]"),
         btnCommitTransaction = $x("//button[contains(text(), 'Commit')]"),
         commentInput = $x("//textarea[@placeholder = 'Comment']"),
@@ -32,7 +32,7 @@ public class ViewTransactionPage {
         btnCancel = $x("//div[@class = 'modal-footer']//button[text() = 'Cancel']"),
         btnPreview = $x("//div[@class = 'modal-footer']//button[text() = 'Preview']"),
         additionalInfoInput = $x("//input[contains(@class, 'form-control form-control-sm')]"),
-        previewRejectMessage = $x("//div[@class = 'modal-body']//div[@class = 'col' and @ng-reflect-ng-switch = 'true']");
+        previewRejectMessage = $x("//div[@class = 'modal-body']/div/div[@class = 'col']");
     private final ElementsCollection
             listOfEntityInSelect = $$x("//div[@role = 'option']"),
             screenshotUrlInputs = $$x("//input[@placeholder = 'Screenshot Url']");
